@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Gestion des questionnaires - Academiscan{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+    <h1 class="h2"><i class="bi bi-ui-checks me-2"></i>Gestion des questionnaires</h1>
+    <a href="{{ url_for('questionnaire.creer') }}" class="btn btn-primary">
+        <i class="bi bi-plus-lg me-1"></i>Nouveau questionnaire
+    </a>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Titre</th>
+                        <th>Date de création</th>
+                        <th class="text-center">Réponses</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for q in questionnaires %}
+                    <tr>
+                        <td>{{ q.id }}</td>
+                        <td class="fw-bold">{{ q.titre }}</td>
+                        <td>{{ q.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
+                        <td class="text-center">
+                            <span class="badge bg-primary rounded-pill">{{ q.reponses|length }}</span>
+                        </td>
+                        <td class="text-end">
+                            <div class="btn-group btn-group-sm">
+                                <a href="{{ url_for('questionnaire.repondre', id=q.id, _external=True) }}" target="_blank" class="btn btn-outline-secondary" title="Ouvrir le lien public">
+                                    <i class="bi bi-box-arrow-up-right"></i> Lien public
+                                </a>
+                                <a href="{{ url_for('questionnaire.resultats', id=q.id) }}" class="btn btn-outline-primary" title="Voir les résultats">
+                                    <i class="bi bi-bar-chart-fill"></i> Résultats
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-4">Aucun questionnaire n'a été créé pour le moment.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

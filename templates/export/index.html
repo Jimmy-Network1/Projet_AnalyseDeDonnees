@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Centre d'Exportation - Academiscan{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+    <h1 class="h2"><i class="bi bi-file-earmark-arrow-down me-2"></i>Centre d'Exportation</h1>
+</div>
+
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Questionnaire</th>
+                        <th>Nombre de réponses</th>
+                        <th class="text-end">Actions d'exportation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for q in questionnaires %}
+                    <tr>
+                        <td class="fw-bold">{{ q.titre }}</td>
+                        <td><span class="badge bg-secondary rounded-pill">{{ q.reponses|length }}</span></td>
+                        <td class="text-end">
+                            <div class="btn-group btn-group-sm" role="group">
+                                <a href="{{ url_for('export.exporter_csv', id=q.id) }}" class="btn btn-outline-success" title="Exporter en CSV">
+                                    <i class="bi bi-filetype-csv"></i> CSV
+                                </a>
+                                <a href="{{ url_for('export.exporter_excel', id=q.id) }}" class="btn btn-outline-success" title="Exporter en Excel">
+                                    <i class="bi bi-file-earmark-excel"></i> Excel
+                                </a>
+                                <a href="{{ url_for('export.exporter_pdf', id=q.id) }}" class="btn btn-outline-danger" title="Exporter en PDF">
+                                    <i class="bi bi-file-earmark-pdf"></i> PDF
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="3" class="text-center text-muted py-4">Aucun questionnaire disponible pour l'exportation.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="alert alert-info d-flex align-items-center shadow-sm" role="alert">
+    <i class="bi bi-info-circle-fill fs-4 me-3"></i>
+    <div>
+        <strong>Note pour les graphiques :</strong> Pour exporter les graphiques en PNG, rendez-vous sur le Tableau de Bord Administrateur, survolez le graphique désiré et cliquez sur l'icône de l'appareil photo dans la barre d'outils Plotly (en haut à droite du graphique).
+    </div>
+</div>
+{% endblock %}

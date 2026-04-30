@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}Créer un questionnaire - Academiscan{% endblock %}
+
+{% block head %}
+<script>
+    let questionCount = 0;
+
+    function addQuestion() {
+        questionCount++;
+        const container = document.getElementById('questions-container');
+        const qDiv = document.createElement('div');
+        qDiv.className = 'card mb-3 border-secondary shadow-sm';
+        
+        qDiv.innerHTML = `
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="card-title text-secondary mb-0">Question #${questionCount}</h5>
+                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="this.closest('.card').remove()"><i class="bi bi-trash"></i> Supprimer</button>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Texte de la question :</label>
+                    <input type="text" name="q_texte[]" class="form-control" required placeholder="Ex: Quel est votre domaine d'étude ?">
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Type de réponse attendue :</label>
+                    <select name="q_type[]" class="form-select" onchange="toggleOptions(this)">
+                        <option value="texte">Texte libre</option>
+                        <option value="qcm">Choix multiples (QCM)</option>
+                        <option value="echelle_1_10">Échelle de 1 à 10</option>
+                        <option value="date">Date</option>
+                    </select>
+                </div>
+                
+                <div class="options-container bg-light p-3 rounded" style="display: none;">
+                    <label class="form-label fw-bold">Options de réponse <small class="text-muted">(séparées par des virgules)</small> :</label>
+                    <input type="text" name="q_options[]" class="form-control" placeholder="Informatique, Droit, Médecine, Autre">
+                    <div class="form-text">L'utilisateur pourra choisir l'une de ces options.</div>
+                </div>
+            </div>
+        `;
+        container.appendChild(qDiv);
+    }
+
+    function toggleOptions(select) {
+        const optionsDiv = select.parentElement.parentElement.querySelector('.options-container');
+        if (select.value === 'qcm') {
+            optionsDiv.style.display = 'block';
+            optionsDiv.querySelector('input').required = true;
+        } else {
+            optionsDiv.style.display = 'none';
+            optionsDiv.querySelector('input').required = false;
+            optionsDiv.querySelector('input').value = '';
+        }
+    }
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+            <h1 class="h2">Nouveau Questionnaire</h1>
+            <a href="{{ url_for('questionnaire.liste') }}" class="btn btn-outline-secondary btn-sm">Retour</a>
+        </div>
+
+        <form method="POST" action="{{ url_for('questionnaire.creer') }}" class="needs-validation" novalidate>
+            {{ form.hidden_tag() }}
+            
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-white py-3">
+                    <h4 class="mb-0 text-primary">Informations générales</h4>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        {{ form.titre.label(class="form-label fw-bold") }}
+                        {{ form.titre(class="form-control form-control-lg", placeholder="Titre du questionnaire") }}
+                        {% for error in form.titre.errors %}
+                            <div class="text-danger mt-1 small">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    <div class="mb-0">
+                        {{ form.description.label(class="form-label fw-bold") }}
+                        {{ form.description(class="form-control", rows=3, placeholder="Brève description de l'objectif...") }}
+                    </div>
+                </div>
+            </div>
+            
+            <h4 class="mb-3 text-primary">Liste des questions</h4>
+            <div id="questions-container">
+                <!-- Dynamic questions go here -->
+            </div>
+            
+            <div class="d-grid gap-2 mb-5">
+                <button type="button" class="btn btn-outline-primary border-dashed py-3" onclick="addQuestion()">
+                    <i class="bi bi-plus-circle me-2"></i>Ajouter une question
+                </button>
+            </div>
+            
+            <div class="card shadow-sm border-0 bg-light mb-5">
+                <div class="card-body text-center">
+                    {{ form.submit(class="btn btn-success btn-lg px-5") }}
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Ajoute une question par défaut au chargement -->
+<script>document.addEventListener("DOMContentLoaded", function() { addQuestion(); });</script>
+{% endblock %}

@@ -1,0 +1,16 @@
+﻿flask
+flask-login
+flask-sqlalchemy
+flask-wtf
+wtforms
+python-decouple
+requests
+beautifulsoup4
+apscheduler
+plotly
+pandas
+openpyxl
+reportlab
+gunicorn
+psycopg2-binary
+email-validator

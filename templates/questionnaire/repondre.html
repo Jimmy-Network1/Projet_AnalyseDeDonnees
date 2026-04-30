@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Répondre : {{ questionnaire.titre }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-lg border-0 mb-5">
+            <div class="card-header bg-primary text-white p-4">
+                <h2 class="h3 mb-2">{{ questionnaire.titre }}</h2>
+                {% if questionnaire.description %}
+                    <p class="mb-0 opacity-75">{{ questionnaire.description }}</p>
+                {% endif %}
+            </div>
+            
+            <div class="card-body p-4 p-md-5">
+                <form method="POST" action="{{ url_for('questionnaire.soumettre', id=questionnaire.id) }}">
+                    {{ form.hidden_tag() }}
+                    
+                    {% for q in questionnaire.questions %}
+                        {% set field_name = 'q_' ~ q.id %}
+                        
+                        <div class="mb-4 p-4 bg-light rounded-3 border">
+                            <label class="form-label fw-bold fs-5 mb-3">{{ q.texte }}</label>
+                            
+                            {% if q.type == 'texte' %}
+                                {{ form[field_name](class="form-control", rows=3, placeholder="Votre réponse...") }}
+                            {% elif q.type == 'qcm' %}
+                                {{ form[field_name](class="form-select") }}
+                            {% elif q.type == 'echelle_1_10' %}
+                                {{ form[field_name](class="form-control", type="number", min="1", max="10") }}
+                                <div class="form-text">Veuillez entrer une valeur entre 1 et 10.</div>
+                            {% elif q.type == 'date' %}
+                                {{ form[field_name](class="form-control", type="date") }}
+                            {% endif %}
+                            
+                            {% if form[field_name].errors %}
+                                <div class="mt-2 text-danger">
+                                {% for error in form[field_name].errors %}
+                                    <small><i class="bi bi-exclamation-triangle"></i> {{ error }}</small><br>
+                                {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                    
+                    <div class="d-grid mt-5">
+                        {{ form.submit(class="btn btn-success btn-lg py-3 fw-bold shadow-sm") }}
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer bg-white text-center py-3 text-muted small border-top">
+                Ce questionnaire est anonyme sauf si vous êtes connecté.
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
