@@ -41,12 +41,14 @@ def create_app(config_name='default'):
     from modules.scraper import bp as scraper_bp
     from modules.dashboard import bp as dashboard_bp
     from modules.export import bp as export_bp
+    from modules.user import bp as user_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(questionnaire_bp)
     app.register_blueprint(scraper_bp)
     app.register_blueprint(dashboard_bp)
     app.register_blueprint(export_bp)
+    app.register_blueprint(user_bp)
 
     # Initialize DB automatically on startup
     with app.app_context():

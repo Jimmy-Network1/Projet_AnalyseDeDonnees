@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{% block title %}Mon Profil - Academiscan{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Colonne de Gauche : Infos & Formulaire -->
+    <div class="col-lg-4 mb-4">
+        <!-- Carte de Profil -->
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body text-center p-4">
+                <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex justify-content-center align-items-center mb-3" style="width: 80px; height: 80px;">
+                    <i class="bi bi-person-fill text-primary" style="font-size: 3rem;"></i>
+                </div>
+                <h3 class="mb-1">{{ current_user.nom }}</h3>
+                <p class="text-muted mb-3">{{ current_user.email }}</p>
+                <span class="badge bg-{{ 'danger' if current_user.role == 'admin' else 'primary' }}">
+                    <i class="bi bi-shield-lock-fill me-1"></i>{{ 'Administrateur' if current_user.role == 'admin' else 'Utilisateur Vérifié' }}
+                </span>
+                <p class="small text-muted mt-3 mb-0">Inscrit depuis le {{ current_user.created_at.strftime('%d/%m/%Y') }}</p>
+            </div>
+        </div>
+
+        <!-- Formulaire d'Ajout de Diplôme -->
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white py-3">
+                <h5 class="mb-0 text-primary"><i class="bi bi-plus-circle me-2"></i>Ajouter un diplôme</h5>
+            </div>
+            <div class="card-body p-4">
+                <p class="small text-muted mb-4">Mettez à jour votre statut pour nous aider à analyser l'insertion professionnelle au Cameroun.</p>
+                
+                <form method="POST" action="{{ url_for('user.profil') }}">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="mb-3">
+                        {{ form.intitule.label(class="form-label fw-bold small") }}
+                        {{ form.intitule(class="form-control form-control-sm") }}
+                        <div class="form-text">{{ form.intitule.description }}</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.etablissement.label(class="form-label fw-bold small") }}
+                        {{ form.etablissement(class="form-control form-control-sm") }}
+                        <div class="form-text">{{ form.etablissement.description }}</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.annee_obtention.label(class="form-label fw-bold small") }}
+                        {{ form.annee_obtention(class="form-control form-control-sm") }}
+                        <div class="form-text">{{ form.annee_obtention.description }}</div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        {{ form.statut_insertion.label(class="form-label fw-bold small") }}
+                        {{ form.statut_insertion(class="form-select form-select-sm") }}
+                    </div>
+                    
+                    <div class="d-grid">
+                        {{ form.submit(class="btn btn-primary") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Colonne de Droite : Historique -->
+    <div class="col-lg-8">
+        
+        <!-- Mes Diplômes -->
+        <div class="d-flex align-items-center mb-3">
+            <i class="bi bi-mortarboard-fill fs-4 text-primary me-2"></i>
+            <h4 class="mb-0">Mon Parcours Universitaire</h4>
+        </div>
+        
+        <div class="card shadow-sm border-0 mb-5">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Diplôme</th>
+                                <th>Établissement</th>
+                                <th class="text-center">Année</th>
+                                <th>Statut professionnel</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for d in diplomes %}
+                            <tr>
+                                <td class="fw-bold">{{ d.intitule }}</td>
+                                <td class="text-muted">{{ d.etablissement }}</td>
+                                <td class="text-center"><span class="badge bg-secondary">{{ d.annee_obtention }}</span></td>
+                                <td>
+                                    {% if 'emploi' in d.statut_insertion|lower %}
+                                        <span class="badge bg-success bg-opacity-25 text-success border border-success"><i class="bi bi-briefcase-fill me-1"></i>{{ d.statut_insertion }}</span>
+                                    {% elif 'recherche' in d.statut_insertion|lower %}
+                                        <span class="badge bg-warning bg-opacity-25 text-dark border border-warning"><i class="bi bi-search me-1"></i>{{ d.statut_insertion }}</span>
+                                    {% else %}
+                                        <span class="badge bg-info bg-opacity-25 text-info border border-info"><i class="bi bi-info-circle-fill me-1"></i>{{ d.statut_insertion }}</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-end">
+                                    <form method="POST" action="{{ url_for('user.supprimer_diplome', id=d.id) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce diplôme ?');" style="display: inline;">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Supprimer"><i class="bi bi-trash"></i></button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center py-5 text-muted">
+                                    <i class="bi bi-journal-x fs-2 d-block mb-2"></i>
+                                    Vous n'avez pas encore renseigné de diplôme.<br>Utilisez le formulaire à gauche pour commencer !
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Historique de participation -->
+        <div class="d-flex align-items-center mb-3">
+            <i class="bi bi-card-checklist fs-4 text-success me-2"></i>
+            <h4 class="mb-0">Mes participations aux enquêtes</h4>
+        </div>
+        
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body p-0">
+                <ul class="list-group list-group-flush">
+                    {% for rep in historique_reponses %}
+                        <li class="list-group-item p-3">
+                            <div class="d-flex w-100 justify-content-between align-items-center">
+                                <h6 class="mb-1 fw-bold text-dark">{{ rep.questionnaire.titre }}</h6>
+                                <small class="text-muted"><i class="bi bi-calendar-event me-1"></i>{{ rep.submitted_at.strftime('%d/%m/%Y') }}</small>
+                            </div>
+                            <p class="mb-1 small text-muted text-truncate" style="max-width: 90%;">
+                                {{ rep.questionnaire.description if rep.questionnaire.description else 'Sondage Academiscan' }}
+                            </p>
+                        </li>
+                    {% else %}
+                        <li class="list-group-item text-center py-4 text-muted">
+                            Vous n'avez participé à aucun questionnaire pour le moment.<br>
+                            <a href="{{ url_for('dashboard.public') }}" class="btn btn-sm btn-outline-primary mt-2">Découvrir les enquêtes</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

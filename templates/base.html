@@ -107,11 +107,13 @@
                 <ul class="navbar-nav">
                     {% if current_user.is_authenticated %}
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle fw-bold text-white" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="bi bi-person-circle me-1"></i>{{ current_user.nom }}
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                                <li><a class="dropdown-item" href="{{ url_for('auth.deconnexion') }}">Déconnexion</a></li>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" aria-labelledby="userDropdown">
+                                <li><a class="dropdown-item" href="{{ url_for('user.profil') }}"><i class="bi bi-person-vcard me-2"></i>Mon Profil</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" href="{{ url_for('auth.deconnexion') }}"><i class="bi bi-box-arrow-right me-2"></i>Déconnexion</a></li>
                             </ul>
                         </li>
                     {% else %}
