@@ -48,6 +48,18 @@ def create_app(config_name='default'):
     app.register_blueprint(dashboard_bp)
     app.register_blueprint(export_bp)
 
+    # Initialize DB automatically on startup
+    with app.app_context():
+        db.create_all()
+        # Check if admin exists
+        admin = User.query.filter_by(email='admin@academiscan.local').first()
+        if not admin:
+            hashed_pw = generate_password_hash('admin123')
+            admin = User(nom='Administrateur', email='admin@academiscan.local', mot_de_passe_hash=hashed_pw, role='admin')
+            db.session.add(admin)
+            db.session.commit()
+            print('Base de données initialisée automatiquement.')
+
     # Simple route for '/' to redirect to public dashboard
     @app.route('/')
     def index():
