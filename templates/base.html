@@ -4,10 +4,74 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Academiscan{% endblock %}</title>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Bootstrap CSS CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f6f9 !important;
+            color: #2c3e50;
+        }
+        /* Navbar moderne */
+        .navbar {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%) !important;
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+        }
+        .navbar-brand {
+            font-size: 1.5rem;
+            letter-spacing: -0.5px;
+        }
+        .nav-link {
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+        /* Effets de survol sur les cartes */
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-radius: 12px;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08) !important;
+        }
+        /* Boutons */
+        .btn {
+            border-radius: 8px;
+            font-weight: 500;
+            padding: 0.5rem 1.25rem;
+            transition: all 0.2s;
+        }
+        .btn-primary {
+            background-color: #2a5298;
+            border-color: #2a5298;
+        }
+        .btn-primary:hover {
+            background-color: #1e3c72;
+            border-color: #1e3c72;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(42, 82, 152, 0.3);
+        }
+        /* Tableaux */
+        .table-hover tbody tr:hover {
+            background-color: rgba(42, 82, 152, 0.03);
+        }
+        /* Responsivité des graphiques Plotly */
+        .js-plotly-plot, .plot-container {
+            width: 100% !important;
+            height: 100% !important;
+        }
+        /* Petits écrans */
+        @media (max-width: 768px) {
+            .navbar-brand { font-size: 1.25rem; }
+            h1 { font-size: 2rem !important; }
+            .card-body { padding: 1.25rem !important; }
+        }
+    </style>
     {% block head %}{% endblock %}
 </head>
 <body class="d-flex flex-column min-vh-100 bg-light">

@@ -4,66 +4,92 @@
 
 {% block head %}
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, #ffffff 0%, #f0f4f8 100%);
+            border: 1px solid rgba(0,0,0,0.05);
+            border-radius: 20px !important;
+        }
+        .stat-icon {
+            font-size: 2.5rem;
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+        .chart-container {
+            min-height: 400px; /* Assure une bonne hauteur sur mobile */
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
 <!-- Hero Section -->
-<div class="p-5 text-center bg-white rounded-3 shadow-sm mb-4 border">
-    <i class="bi bi-bar-chart-line text-primary" style="font-size: 3rem;"></i>
-    <h1 class="mt-3 text-body-emphasis">Observatoire de l'Éducation</h1>
-    <p class="lead text-muted mx-auto" style="max-width: 600px;">
-        Academiscan analyse les données universitaires, le marché de l'emploi et l'insertion professionnelle au Cameroun en temps réel.
+<div class="hero-section p-md-5 p-4 text-center shadow-sm mb-5">
+    <i class="bi bi-bar-chart-line-fill text-primary mb-3" style="font-size: 3.5rem;"></i>
+    <h1 class="display-5 fw-bold text-body-emphasis mb-3">Observatoire de l'Éducation</h1>
+    <p class="lead text-muted mx-auto mb-4" style="max-width: 700px;">
+        Academiscan collecte, analyse et visualise les données universitaires, le marché de l'emploi et l'insertion professionnelle au Cameroun en temps réel.
     </p>
     {% if not current_user.is_authenticated %}
-    <div class="mt-4">
-        <a href="{{ url_for('auth.inscription') }}" class="btn btn-primary btn-lg px-4 me-2">Rejoindre la plateforme</a>
-        <a href="#stats" class="btn btn-outline-secondary btn-lg px-4">Explorer les données</a>
+    <div class="d-grid gap-2 d-sm-flex justify-content-sm-center mt-4">
+        <a href="{{ url_for('auth.inscription') }}" class="btn btn-primary btn-lg px-4 gap-3 shadow-sm">
+            <i class="bi bi-person-plus me-2"></i>Rejoindre la plateforme
+        </a>
+        <a href="#stats" class="btn btn-outline-secondary btn-lg px-4">
+            <i class="bi bi-graph-up-arrow me-2"></i>Explorer les données
+        </a>
     </div>
     {% endif %}
 </div>
 
 <!-- Key Stats -->
-<div id="stats" class="row g-4 mb-4 text-center">
+<div id="stats" class="row g-4 mb-5 text-center">
     <div class="col-md-4">
-        <div class="card border-0 shadow-sm bg-primary text-white h-100">
+        <div class="card border-0 shadow-sm bg-primary text-white h-100 card-hover">
             <div class="card-body py-4">
-                <h2 class="display-4 fw-bold mb-0">{{ stats.total_questionnaires }}</h2>
-                <p class="fs-5 mb-0 opacity-75">Questionnaires actifs</p>
+                <i class="bi bi-ui-checks stat-icon d-block"></i>
+                <h2 class="display-5 fw-bold mb-0">{{ stats.total_questionnaires }}</h2>
+                <p class="fs-6 mb-0 opacity-75 text-uppercase tracking-wide">Questionnaires</p>
             </div>
         </div>
     </div>
     <div class="col-md-4">
-        <div class="card border-0 shadow-sm bg-success text-white h-100">
+        <div class="card border-0 shadow-sm bg-success text-white h-100 card-hover">
             <div class="card-body py-4">
-                <h2 class="display-4 fw-bold mb-0">{{ stats.total_reponses }}</h2>
-                <p class="fs-5 mb-0 opacity-75">Réponses collectées</p>
+                <i class="bi bi-people-fill stat-icon d-block"></i>
+                <h2 class="display-5 fw-bold mb-0">{{ stats.total_reponses }}</h2>
+                <p class="fs-6 mb-0 opacity-75 text-uppercase tracking-wide">Réponses collectées</p>
             </div>
         </div>
     </div>
     <div class="col-md-4">
-        <div class="card border-0 shadow-sm bg-info text-white h-100">
+        <div class="card border-0 shadow-sm bg-info text-white h-100 card-hover">
             <div class="card-body py-4">
-                <h2 class="display-4 fw-bold mb-0">{{ stats.total_offres }}</h2>
-                <p class="fs-5 mb-0 opacity-75">Offres scrapées</p>
+                <i class="bi bi-robot stat-icon d-block"></i>
+                <h2 class="display-5 fw-bold mb-0">{{ stats.total_offres }}</h2>
+                <p class="fs-6 mb-0 opacity-75 text-uppercase tracking-wide">Offres scrapées</p>
             </div>
         </div>
     </div>
 </div>
 
 <!-- Charts Section -->
-<h3 class="mb-4 mt-5 border-bottom pb-2">Vue d'ensemble des statistiques</h3>
-<div class="row g-4">
+<div class="d-flex align-items-center mb-4 mt-5 pb-2 border-bottom">
+    <i class="bi bi-pie-chart-fill fs-4 text-primary me-2"></i>
+    <h3 class="mb-0">Vue d'ensemble des statistiques</h3>
+</div>
+
+<div class="row g-4 mb-5">
     <div class="col-lg-6">
-        <div class="card shadow-sm border-0 h-100">
-            <div class="card-body">
-                <div id="chart-reponse" style="width:100%; height:400px;"></div>
+        <div class="card shadow-sm border-0 h-100 card-hover">
+            <div class="card-body p-2 p-md-3 chart-container">
+                <div id="chart-reponse"></div>
             </div>
         </div>
     </div>
     <div class="col-lg-6">
-        <div class="card shadow-sm border-0 h-100">
-            <div class="card-body">
-                <div id="chart-insertion" style="width:100%; height:400px;"></div>
+        <div class="card shadow-sm border-0 h-100 card-hover">
+            <div class="card-body p-2 p-md-3 chart-container">
+                <div id="chart-insertion"></div>
             </div>
         </div>
     </div>
@@ -73,10 +99,13 @@
 
 {% block scripts %}
 <script>
+    // Configuration responsive pour Plotly
+    var config = {responsive: true, displayModeBar: false};
+    
     var graphReponse = {{ chart_reponse | safe }};
-    Plotly.newPlot('chart-reponse', graphReponse.data, graphReponse.layout, {responsive: true});
+    Plotly.newPlot('chart-reponse', graphReponse.data, graphReponse.layout, config);
     
     var graphInsertion = {{ chart_insertion | safe }};
-    Plotly.newPlot('chart-insertion', graphInsertion.data, graphInsertion.layout, {responsive: true});
+    Plotly.newPlot('chart-insertion', graphInsertion.data, graphInsertion.layout, config);
 </script>
 {% endblock %}
