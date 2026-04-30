@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: academiscan
+    name: kemmogne-ange-merveille-24g2156-v1-academiscan
     env: python
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn "app:create_app()"
